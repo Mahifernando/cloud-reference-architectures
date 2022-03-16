@@ -4,3 +4,6 @@ workspace.json
 
 # OS
 .DS_Store
+
+# node / javascript
+node_modules
