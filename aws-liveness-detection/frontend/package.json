@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "./get-face-models.sh && vue-cli-service build",
+    "face-models": "./get-face-models.sh",
+    "build": "yarn face-models && vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
