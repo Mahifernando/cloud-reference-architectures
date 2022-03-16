@@ -7,3 +7,6 @@ workspace.json
 
 # node / javascript
 node_modules
+
+# builds
+dist
