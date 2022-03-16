@@ -10,3 +10,7 @@ node_modules
 
 # builds
 dist
+
+# face-api
+**/weights/*.shard
+**/weights/*_manifest.json
