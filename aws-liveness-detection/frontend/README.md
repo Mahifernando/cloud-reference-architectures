@@ -1,4 +1,4 @@
-# Liveness Detection (client)
+# Liveness detection frontend (UI) app
 
 ## Project setup
 ```
