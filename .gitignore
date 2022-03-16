@@ -5,8 +5,10 @@ workspace.json
 # OS
 .DS_Store
 
-# node / javascript
+# node / javascript / python
 node_modules
+.venv
+__pycache__
 
 # builds
 dist
@@ -14,3 +16,6 @@ dist
 # face-api
 **/weights/*.shard
 **/weights/*_manifest.json
+
+# AWS CDK
+cdk.out
