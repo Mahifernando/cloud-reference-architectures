@@ -48,7 +48,7 @@ class LivenessAppStack(Stack):
         challengeFunction = _lambda.Function(self, 'ChallengeFunction',
                                     runtime=_lambda.Runtime.PYTHON_3_9,
                                     code=_lambda.Code.from_asset('../app'),
-                                    handler='challenge_service.handler',
+                                    handler='liveness_challenge_app.handler',
                                     role=challengeFunctionRole,
                                     environment={
                                         "REGION_NAME": self.region,
