@@ -9,6 +9,7 @@ workspace.json
 node_modules
 .venv
 __pycache__
+.pytest_cache
 
 # builds
 dist
