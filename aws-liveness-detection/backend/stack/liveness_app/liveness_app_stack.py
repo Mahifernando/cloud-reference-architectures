@@ -6,6 +6,7 @@ from aws_cdk import (
     aws_dynamodb as _dynamodb,
     aws_secretsmanager as _secretsmanager,
     aws_iam as _iam,
+    RemovalPolicy
 )
 
 from constructs import Construct
@@ -16,13 +17,16 @@ class LivenessAppStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # Image store (S3)
-        imagesBucket = _s3.Bucket(self, "ImagesBucket", versioned=True, encryption=_s3.BucketEncryption.S3_MANAGED)
+        imagesBucket = self.new_bucket('ImagesBucket')
 
         # Frontend website UI (S3)
-        staticWebsiteBucket = _s3.Bucket(self, "StaticWebsiteBucket", versioned=True, encryption=_s3.BucketEncryption.S3_MANAGED)
+        staticWebsiteBucket = self.new_bucket('StaticWebsiteBucket')
 
         # Data store (DynamoDB)
-        table = _dynamodb.Table(self, "ChallengesTable", partition_key=_dynamodb.Attribute(name="id", type=_dynamodb.AttributeType.STRING))
+        table = _dynamodb.Table(self, 
+                                "ChallengesTable", 
+                                partition_key=_dynamodb.Attribute(name="id", type=_dynamodb.AttributeType.STRING),
+                                removal_policy=RemovalPolicy.DESTROY)
 
         # Secrets store (Secrets Manager)
         secretsmanager = _secretsmanager.Secret(self, "TokenSecret")
@@ -55,3 +59,13 @@ class LivenessAppStack(Stack):
 
         # API gateway
         api = _apigateway.LambdaRestApi(self, 'ChallengeApi', handler=challengeFunction)
+
+
+    def new_bucket(self,name):
+        instance = _s3.Bucket(self, 
+                              name, 
+                              versioned=True,
+                              encryption=_s3.BucketEncryption.S3_MANAGED,
+                              removal_policy=RemovalPolicy.DESTROY,
+                              auto_delete_objects=True)
+        return instance
