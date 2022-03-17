@@ -1,3 +1,5 @@
+# Lambda handler debug script
+
 import json
 
 def handler(event, context):
