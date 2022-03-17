@@ -16,7 +16,7 @@ class LivenessAppStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # Image store (S3)
-        framesBucket = _s3.Bucket(self, "FramesBucket", versioned=True, encryption=_s3.BucketEncryption.S3_MANAGED)
+        imagesBucket = _s3.Bucket(self, "ImagesBucket", versioned=True, encryption=_s3.BucketEncryption.S3_MANAGED)
 
         # Frontend website UI (S3)
         staticWebsiteBucket = _s3.Bucket(self, "StaticWebsiteBucket", versioned=True, encryption=_s3.BucketEncryption.S3_MANAGED)
@@ -28,25 +28,27 @@ class LivenessAppStack(Stack):
         secretsmanager = _secretsmanager.Secret(self, "TokenSecret")
 
         # IAM
-        challengeFunctionRole = _iam.Role(self, "ChallengeFunctionRole", assumed_by=_iam.ServicePrincipal("lambda.amazonaws.com"))
-
-        challengeFunctionRole.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("CloudWatchLogsFullAccess"))
-        challengeFunctionRole.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess"))
-        challengeFunctionRole.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonRekognitionFullAccess"))
-        challengeFunctionRole.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"))
-        challengeFunctionRole.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("SecretsManagerReadWrite"))
+        challengeFunctionRole = _iam.Role(self, "ChallengeFunctionRole", 
+                                          assumed_by=_iam.ServicePrincipal("lambda.amazonaws.com"), 
+                                          managed_policies=[
+                                              _iam.ManagedPolicy.from_aws_managed_policy_name("CloudWatchLogsFullAccess"),
+                                              _iam.ManagedPolicy.from_aws_managed_policy_name("AmazonDynamoDBFullAccess"),
+                                              _iam.ManagedPolicy.from_aws_managed_policy_name("AmazonRekognitionFullAccess"),
+                                              _iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
+                                              _iam.ManagedPolicy.from_aws_managed_policy_name("SecretsManagerReadWrite")
+                                          ])
 
         challengeFunctionRole.add_to_policy(_iam.PolicyStatement(effect=_iam.Effect.ALLOW, resources=["*"], actions=["sts:AssumeRole"]))
 
         # Lambda function
         challengeFunction = _lambda.Function(self, 'ChallengeFunction',
                                     runtime=_lambda.Runtime.PYTHON_3_9,
-                                    code=_lambda.Code.from_asset('lambda'),
+                                    code=_lambda.Code.from_asset('../app'),
                                     handler='challenge_service.handler',
                                     role=challengeFunctionRole,
                                     environment={
                                         "REGION_NAME": self.region,
-                                        "BUCKET_NAME": framesBucket.bucket_name,
+                                        "BUCKET_NAME": imagesBucket.bucket_name,
                                         "DDB_TABLE": table.table_name,
                                         "TOKEN_SECRET_ARN": secretsmanager.secret_arn
                                     })
