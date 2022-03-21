@@ -1,8 +1,10 @@
 # AWS Liveness Detection
 
-https://aws.amazon.com/pt/blogs/industries/improving-fraud-prevention-in-financial-institutions-by-building-a-liveness-detection-solution/
+This example repository is based on below blog posts and [AWS Liveness Detection Framework](https://aws.amazon.com/solutions/implementations/liveness-detection-framework)
 
-https://aws.amazon.com/blogs/industries/liveness-detection-to-improve-fraud-prevention-in-financial-institutions-with-amazon-rekognition/
+[Improving fraud prevention in financial institutions by building a liveness detection architecture](https://aws.amazon.com/pt/blogs/industries/improving-fraud-prevention-in-financial-institutions-by-building-a-liveness-detection-solution/)
+
+[Liveness Detection to Improve Fraud Prevention in Financial Institutions with Amazon Rekognition](https://aws.amazon.com/blogs/industries/liveness-detection-to-improve-fraud-prevention-in-financial-institutions-with-amazon-rekognition/)
 
 
 ## Architecture
