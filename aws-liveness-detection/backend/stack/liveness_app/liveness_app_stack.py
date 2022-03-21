@@ -45,17 +45,16 @@ class LivenessAppStack(Stack):
         challengeFunctionRole.add_to_policy(_iam.PolicyStatement(effect=_iam.Effect.ALLOW, resources=["*"], actions=["sts:AssumeRole"]))
 
         # Lambda function
-        challengeFunction = _lambda.Function(self, 'ChallengeFunction',
-                                    runtime=_lambda.Runtime.PYTHON_3_9,
-                                    code=_lambda.Code.from_asset('../app'),
-                                    handler='liveness_challenge_app.handler',
-                                    role=challengeFunctionRole,
-                                    environment={
-                                        "REGION_NAME": self.region,
-                                        "BUCKET_NAME": imagesBucket.bucket_name,
-                                        "DDB_TABLE": table.table_name,
-                                        "TOKEN_SECRET_ARN": secretsmanager.secret_arn
-                                    })
+        challengeFunction = _lambda.DockerImageFunction(self, 'ChallengeFunction', 
+                                                code=_lambda.DockerImageCode.from_image_asset('../app'),
+                                                role=challengeFunctionRole,
+                                                environment={
+                                                            "REGION_NAME": self.region,
+                                                            "BUCKET_NAME": imagesBucket.bucket_name,
+                                                            "DDB_TABLE": table.table_name,
+                                                            "TOKEN_SECRET_ARN": secretsmanager.secret_arn
+                                                            }
+                                                )
 
         # API gateway
         api = _apigateway.LambdaRestApi(self, 'ChallengeApi', handler=challengeFunction)
