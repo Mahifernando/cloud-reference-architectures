@@ -37,6 +37,7 @@ VERIFY_PATTERN = re.compile('\\/challenge\\/[A-Za-z0-9-]*\\/verify')
 
 
 def handler(event, context):
+    print(event)
     method = event['httpMethod']
     path = event['path']
 
